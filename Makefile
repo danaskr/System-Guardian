@@ -1,10 +1,19 @@
-CC = gcc
-CFLAGS = -Wall -Wextra -std=c11
+CC      = gcc
+CFLAGS  = -Wall -Wextra -pedantic -std=c11
+TARGET  = guardian
+SRCDIR  = src
+SRCS    = $(SRCDIR)/guardian.c $(SRCDIR)/cpu.c $(SRCDIR)/memory.c $(SRCDIR)/logger.c
+OBJS    = $(SRCS:.c=.o)
 
-SRC = src/guardian.c src/cpu.c src/memory.c src/logger.c
+.PHONY: all clean
 
-guardian:
-	$(CC) $(CFLAGS) $(SRC) -o guardian
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $^
+
+$(SRCDIR)/%.o: $(SRCDIR)/%.c
+	$(CC) $(CFLAGS) -I$(SRCDIR) -c $< -o $@
 
 clean:
-	rm -f guardian
+	rm -f $(OBJS) $(TARGET) guardian.log
